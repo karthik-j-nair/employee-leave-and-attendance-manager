@@ -4,8 +4,12 @@ import appRouter from "./routes/auth.route.js";
 import leaveRouter from "./routes/leave.route.js";
 import attendanceRouter from "./routes/attendace.route.js";
 import cors from "cors";
+import path from "path";
 
 const app = express();
+
+// Needed for ES modules (__dirname fix)
+const __dirname = path.resolve();
 
 /**
  * Middlewares
@@ -21,11 +25,24 @@ if (process.env.NODE_ENV !== "production") {
   }));
 }
 
+app.use(express.static(path.join(__dirname, "public")));
+
 /**
  * Routes
  */
 app.use("/api/auth", appRouter);
 app.use("/api/leave", leaveRouter);
 app.use("/api/attendance", attendanceRouter);
+
+
+/**
+ * -----------------------
+ * SPA Fallback (VERY IMPORTANT)
+ * -----------------------
+ * This handles React routes like /home, /dashboard
+ */
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 export default app;
