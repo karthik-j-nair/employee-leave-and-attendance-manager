@@ -16,7 +16,6 @@ const __dirname = path.resolve();
  */
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.static("./public"));
 if (process.env.NODE_ENV !== "production") {
   app.use(cors({
     origin: "http://localhost:5173",
@@ -35,13 +34,7 @@ app.use("/api/leave", leaveRouter);
 app.use("/api/attendance", attendanceRouter);
 
 
-/**
- * -----------------------
- * SPA Fallback (VERY IMPORTANT)
- * -----------------------
- * This handles React routes like /home, /dashboard
- */
-app.get("*", (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
